@@ -20,7 +20,7 @@ st.set_page_config(
 
 @st.cache_resource
 def load_model():
-    return joblib.load("Model/model.pkl")
+    return joblib.load("Model/loan_approval_pipeline.pkl")
 
 model = load_model()
 
