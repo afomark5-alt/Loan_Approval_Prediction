@@ -31,17 +31,17 @@ model = load_model()
 st.markdown("""
 <style>
 
-/* ===============================
-Main Background
-=============================== */
+/* ==========================================================
+MAIN BACKGROUND
+========================================================== */
 
 .main{
     background-color:#F8FAFC;
 }
 
-/* ===============================
-Page Title
-=============================== */
+/* ==========================================================
+PAGE TITLES
+========================================================== */
 
 h1{
     color:#0F172A;
@@ -49,13 +49,13 @@ h1{
     font-weight:700;
 }
 
-h3{
+h2,h3{
     color:#1E3A8A;
 }
 
-/* ===============================
-Information Cards
-=============================== */
+/* ==========================================================
+METRIC CARDS
+========================================================== */
 
 .metric-card{
     background:linear-gradient(135deg,#2563EB,#1D4ED8);
@@ -63,25 +63,26 @@ Information Cards
     padding:20px;
     border-radius:15px;
     text-align:center;
-    box-shadow:0px 5px 12px rgba(0,0,0,0.18);
+    box-shadow:0 5px 12px rgba(0,0,0,.18);
     margin-bottom:15px;
 }
 
 .metric-card h2,
-.metric-card h3{
+.metric-card h3,
+.metric-card p{
     color:white;
     margin:0;
 }
 
-/* ===============================
-Predict Button
-=============================== */
+/* ==========================================================
+BUTTON
+========================================================== */
 
 .stButton > button{
     width:100%;
     height:55px;
-    border-radius:12px;
     border:none;
+    border-radius:12px;
     background:#2563EB;
     color:white;
     font-size:18px;
@@ -93,101 +94,69 @@ Predict Button
     color:white;
 }
 
-/* ===============================
-Sidebar
-=============================== */
+/* ==========================================================
+SIDEBAR
+========================================================== */
 
 [data-testid="stSidebar"]{
-    background:#F1F5F9;
+    background:#2B2D38;
 }
 
-/* ==========================================
-SIDEBAR LABELS
-========================================== */
+/* Sidebar headings */
+
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3{
+    color:#FFFFFF !important;
+}
+
+/* Sidebar labels */
 
 [data-testid="stSidebar"] label{
-    color:#0F172A !important;
+    color:#FFFFFF !important;
     font-weight:600;
 }
 
-/* Expander titles */
+/* Sidebar description */
 
-[data-testid="stSidebar"] .streamlit-expanderHeader{
-    color:#0F172A !important;
-    font-weight:700;
+[data-testid="stSidebar"] p{
+    color:#C7CBD6 !important;
 }
 
-/* Selectbox text */
+/* Selected values inside dropdowns */
 
-[data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"]{
-    color:#0F172A !important;
+[data-testid="stSidebar"] [data-baseweb="select"] *{
+    color:#FFFFFF !important;
 }
 
-/* Number input text */
+/* Number inputs */
 
 [data-testid="stSidebar"] input{
-    color:#0F172A !important;
+    color:#FFFFFF !important;
 }
 
-/* Sidebar markdown */
-
-[data-testid="stSidebar"] p,
-[data-testid="stSidebar"] span{
-    color:#0F172A !important;
-}
-
-/* ===============================
-Sidebar Input Values
-=============================== */
-
-/* Selected value inside selectboxes */
-[data-testid="stSidebar"] div[data-baseweb="select"] > div {
-    color: #0F172A !important;
-}
-
-/* Dropdown placeholder/value */
-[data-testid="stSidebar"] div[data-baseweb="select"] span {
-    color: #0F172A !important;
-}
-
-/* Number input text */
-[data-testid="stSidebar"] input[type="number"] {
-    color: #0F172A !important;
-}
-
-/* Text input (if any) */
-[data-testid="stSidebar"] input[type="text"] {
-    color: #0F172A !important;
-}
-
-/* ===============================
-Containers
-=============================== */
+/* ==========================================================
+CONTAINERS
+========================================================== */
 
 .block-container{
     padding-top:2rem;
     padding-bottom:2rem;
 }
 
-/* ===============================
-Success / Error
-=============================== */
+/* ==========================================================
+SUCCESS / ERROR
+========================================================== */
 
-.stSuccess{
-    border-radius:12px;
-}
-
-.stError{
-    border-radius:12px;
-}
-
+.stSuccess,
+.stError,
 .stWarning{
     border-radius:12px;
 }
 
-/* ===============================
-Footer
-=============================== */
+/* ==========================================================
+FOOTER
+========================================================== */
 
 .footer{
     text-align:center;
@@ -206,27 +175,36 @@ st.title("🏦 Loan Approval Prediction System")
 
 st.markdown(
 """
-Determine whether a loan application is likely to be **Approved**
-or **Rejected** based on applicant information using a trained
-Machine Learning model.
+Predict whether a loan application is likely to be **Approved**
+or **Rejected** using a Machine Learning model trained on
+historical loan application data.
 """
 )
 
 st.divider()
 
 # ==========================================================
-# SIDEBAR
+# SIDEBAR HEADER
 # ==========================================================
 
 st.sidebar.markdown(
     """
-    <h2 style="
-        color:#0F172A;
-        text-align:center;
-        font-weight:bold;
-        margin-bottom:20px;">
-        📝 Loan Application Form
-    </h2>
+    <h1 style="
+        color:white;
+        font-size:32px;
+        font-weight:700;
+        margin-bottom:5px;
+        text-align:left;">
+        Loan Application
+    </h1>
+
+    <p style="
+        color:#C7CBD6;
+        font-size:16px;
+        margin-top:0;
+        margin-bottom:25px;">
+        Enter your details below
+    </p>
     """,
     unsafe_allow_html=True
 )
@@ -235,81 +213,87 @@ st.sidebar.markdown(
 # PERSONAL INFORMATION
 # ==========================================================
 
-with st.sidebar.expander("👤 Personal Information", expanded=True):
+st.sidebar.subheader("👤 Personal Information")
 
-    gender = st.selectbox(
-        "Gender",
-        ["Male", "Female"]
-    )
+gender = st.sidebar.selectbox(
+    "Gender",
+    ["Male", "Female"]
+)
 
-    married = st.selectbox(
-        "Marital Status",
-        ["Yes", "No"]
-    )
+married = st.sidebar.selectbox(
+    "Marital Status",
+    ["Yes", "No"]
+)
 
-    dependents = st.selectbox(
-        "Dependents",
-        ["0", "1", "2", "3+"]
-    )
+dependents = st.sidebar.selectbox(
+    "Dependents",
+    ["0", "1", "2", "3+"]
+)
 
-    education = st.selectbox(
-        "Education",
-        ["Graduate", "Not Graduate"]
-    )
+education = st.sidebar.selectbox(
+    "Education",
+    ["Graduate", "Not Graduate"]
+)
 
-    self_employed = st.selectbox(
-        "Self Employed",
-        ["No", "Yes"]
-    )
+self_employed = st.sidebar.selectbox(
+    "Self Employed",
+    ["No", "Yes"]
+)
+
+st.sidebar.divider()
 
 # ==========================================================
 # FINANCIAL INFORMATION
 # ==========================================================
 
-with st.sidebar.expander("💰 Financial Information", expanded=True):
+st.sidebar.subheader("💰 Financial Information")
 
-    applicant_income = st.number_input(
-        "Applicant Income",
-        min_value=0.0,
-        value=5000.0,
-        step=100.0
-    )
+applicant_income = st.sidebar.number_input(
+    "Applicant Income",
+    min_value=0.0,
+    value=5000.0,
+    step=100.0
+)
 
-    coapplicant_income = st.number_input(
-        "Co-applicant Income",
-        min_value=0.0,
-        value=0.0,
-        step=100.0
-    )
+coapplicant_income = st.sidebar.number_input(
+    "Co-applicant Income",
+    min_value=0.0,
+    value=0.0,
+    step=100.0
+)
 
-    loan_amount = st.number_input(
-        "Loan Amount (in thousands)",
-        min_value=0.0,
-        value=120.0,
-        step=1.0
-    )
+loan_amount = st.sidebar.number_input(
+    "Loan Amount (in thousands)",
+    min_value=0.0,
+    value=120.0,
+    step=1.0
+)
 
-    loan_term = st.selectbox(
-        "Loan Amount Term (Days)",
-        [12, 36, 60, 84, 120, 180, 240, 300, 360, 480]
-    )
+loan_term = st.sidebar.selectbox(
+    "Loan Amount Term (Days)",
+    [12, 36, 60, 84, 120, 180, 240, 300, 360, 480]
+)
 
-    credit_history = st.selectbox(
-        "Credit History",
-        [1, 0],
-        format_func=lambda x: "Good" if x == 1 else "Poor"
-    )
+credit_history = st.sidebar.selectbox(
+    "Credit History",
+    [1, 0],
+    format_func=lambda x: "Good" if x == 1 else "Poor"
+)
+
+st.sidebar.divider()
 
 # ==========================================================
 # PROPERTY INFORMATION
 # ==========================================================
 
-with st.sidebar.expander("🏠 Property Information", expanded=True):
+st.sidebar.subheader("🏠 Property Information")
 
-    property_area = st.selectbox(
-        "Property Area",
-        ["Urban", "Semiurban", "Rural"]
-    )
+property_area = st.sidebar.selectbox(
+    "Property Area",
+    ["Urban", "Semiurban", "Rural"]
+)
+
+st.sidebar.write("")
 
 # ==========================================================
 # PREDICT BUTTON
@@ -326,17 +310,17 @@ predict = st.sidebar.button(
 
 sample_data = pd.DataFrame({
 
-    "Gender":[gender],
-    "Married":[married],
-    "Dependents":[dependents],
-    "Education":[education],
-    "Self_Employed":[self_employed],
-    "ApplicantIncome":[applicant_income],
-    "CoapplicantIncome":[coapplicant_income],
-    "LoanAmount":[loan_amount],
-    "Loan_Amount_Term":[loan_term],
-    "Credit_History":[credit_history],
-    "Property_Area":[property_area]
+    "Gender": [gender],
+    "Married": [married],
+    "Dependents": [dependents],
+    "Education": [education],
+    "Self_Employed": [self_employed],
+    "ApplicantIncome": [applicant_income],
+    "CoapplicantIncome": [coapplicant_income],
+    "LoanAmount": [loan_amount],
+    "Loan_Amount_Term": [loan_term],
+    "Credit_History": [credit_history],
+    "Property_Area": [property_area]
 
 })
 
@@ -348,90 +332,113 @@ if predict:
 
     prediction = model.predict(sample_data)[0]
 
-    try:
+    confidence = None
+    approval_probability = None
+    rejection_probability = None
 
-        probability = model.predict_proba(sample_data)[0]
+    if hasattr(model, "predict_proba"):
 
-        confidence = np.max(probability) * 100
+        probabilities = model.predict_proba(sample_data)[0]
 
-        approval_probability = probability[1] * 100
+        rejection_probability = probabilities[0] * 100
+        approval_probability = probabilities[1] * 100
 
-        rejection_probability = probability[0] * 100
-
-    except:
-
-        confidence = None
-        approval_probability = None
-        rejection_probability = None
+        confidence = max(probabilities) * 100
 
     total_income = applicant_income + coapplicant_income
     
 # ==========================================================
-# DISPLAY PREDICTION
+# PREDICTION RESULTS
 # ==========================================================
 
     st.divider()
 
-    col1, col2 = st.columns(2)
+    if prediction == 1:
+
+        st.success("## ✅ Loan Approved")
+
+        st.write(
+            """
+            Based on the information provided, the applicant is
+            likely to qualify for the requested loan.
+            """
+        )
+
+    else:
+
+        st.error("## ❌ Loan Rejected")
+
+        st.write(
+            """
+            Based on the information provided, the applicant is
+            unlikely to qualify for the requested loan.
+            """
+        )
 
     # ======================================================
-    # PREDICTION RESULT
+    # SUMMARY CARDS
     # ======================================================
+
+    col1, col2 = st.columns(2)
 
     with col1:
 
-        if prediction == 1:
-
-            st.success("## ✅ Loan Approved")
-
-            st.write(
-                """
-                Congratulations! Based on the information provided,
-                the applicant is likely to qualify for the requested loan.
-                """
-            )
-
-        else:
-
-            st.error("## ❌ Loan Rejected")
-
-            st.write(
-                """
-                Based on the information provided,
-                the applicant is unlikely to qualify for the requested loan.
-                """
-            )
-
-    # ======================================================
-    # LOAN APPLICATION SUMMARY
-    # ======================================================
-
-    with col2:
-
         st.markdown(f"""
         <div class="metric-card">
-            <h3>📄 Loan Application Summary</h3>
+            <h3>💰 Total Income</h3>
             <h2>₦ {total_income:,.0f}</h2>
-            <p>Total Monthly Income</p>
         </div>
         """, unsafe_allow_html=True)
 
-    st.divider()
+    with col2:
+
+        loan_status = "Approved" if prediction == 1 else "Rejected"
+
+        st.markdown(f"""
+        <div class="metric-card">
+            <h3>📄 Loan Status</h3>
+            <h2>{loan_status}</h2>
+        </div>
+        """, unsafe_allow_html=True)
 
     # ======================================================
-    # PREDICTION PROBABILITY
+    # CONFIDENCE
     # ======================================================
 
     if confidence is not None:
 
         st.markdown(f"""
         <div class="metric-card">
-            <h3>📊 Prediction Probability</h3>
+            <h3>📊 Confidence Score</h3>
             <h2>{confidence:.2f}%</h2>
         </div>
         """, unsafe_allow_html=True)
 
-        st.progress(confidence / 100)
+        st.progress(confidence/100)
+
+    # ======================================================
+    # PROBABILITIES
+    # ======================================================
+
+    if approval_probability is not None:
+
+        st.subheader("Prediction Probability")
+
+        prob_col1, prob_col2 = st.columns(2)
+
+        with prob_col1:
+
+            st.metric(
+                "Approval Probability",
+                f"{approval_probability:.2f}%"
+            )
+
+        with prob_col2:
+
+            st.metric(
+                "Rejection Probability",
+                f"{rejection_probability:.2f}%"
+            )
 
     st.divider()
 
@@ -445,9 +452,8 @@ if predict:
 
         st.success(
             """
-            The applicant shows characteristics commonly associated
-            with successful loan approvals. The application appears
-            financially suitable based on the information provided.
+            The applicant has a strong likelihood of loan approval
+            based on the submitted financial information.
             """
         )
 
@@ -455,10 +461,9 @@ if predict:
 
         st.warning(
             """
-            Consider improving the applicant's credit history,
-            increasing income, reducing the requested loan amount,
-            or applying with a stronger financial profile before
-            submitting another application.
+            Approval is unlikely. Improving credit history,
+            increasing income, or requesting a smaller loan amount
+            may improve future approval chances.
             """
         )
         
@@ -472,10 +477,11 @@ st.info(
     """
     **Disclaimer**
 
-    This application is intended for educational and demonstration
-    purposes only. Predictions are generated using a Machine Learning
-    model trained on historical loan application data and should not
-    replace decisions made by financial institutions.
+    This application is intended for educational and demonstration purposes only.
+    Predictions are generated using a Machine Learning model trained on historical
+    loan application data and should not be considered as official loan approval
+    decisions. Financial institutions evaluate additional factors before making
+    lending decisions.
     """
 )
 
@@ -487,11 +493,18 @@ st.markdown(
 """
 <div class="footer">
 
-Developed with ❤️ using <b>Python</b>, <b>Scikit-Learn</b> and <b>Streamlit</b>
+<hr style="margin-top:30px;margin-bottom:20px;">
+
+<p style="font-size:15px;">
+🏦 <b>Loan Approval Prediction System</b>
+</p>
+
+<p style="font-size:13px;">
+Developed with ❤️ using
+Python • Scikit-Learn • Streamlit
+</p>
 
 </div>
 """,
 unsafe_allow_html=True
-)
-
-            
+)        
