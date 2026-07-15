@@ -135,6 +135,31 @@ SIDEBAR LABELS
 [data-testid="stSidebar"] span{
     color:#0F172A !important;
 }
+
+/* ===============================
+Sidebar Input Values
+=============================== */
+
+/* Selected value inside selectboxes */
+[data-testid="stSidebar"] div[data-baseweb="select"] > div {
+    color: #0F172A !important;
+}
+
+/* Dropdown placeholder/value */
+[data-testid="stSidebar"] div[data-baseweb="select"] span {
+    color: #0F172A !important;
+}
+
+/* Number input text */
+[data-testid="stSidebar"] input[type="number"] {
+    color: #0F172A !important;
+}
+
+/* Text input (if any) */
+[data-testid="stSidebar"] input[type="text"] {
+    color: #0F172A !important;
+}
+
 /* ===============================
 Containers
 =============================== */
