@@ -159,7 +159,18 @@ st.divider()
 # SIDEBAR
 # ==========================================================
 
-st.sidebar.header("📝 Loan Application Form")
+st.sidebar.markdown(
+    """
+    <h2 style="
+        color:#0F172A;
+        text-align:center;
+        font-weight:bold;
+        margin-bottom:20px;">
+        📝 Loan Application Form
+    </h2>
+    """,
+    unsafe_allow_html=True
+)
 
 # ==========================================================
 # PERSONAL INFORMATION
