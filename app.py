@@ -3,20 +3,20 @@ import pandas as pd
 import numpy as np
 import joblib
 
-# ============================================================
+# ==========================================================
 # PAGE CONFIGURATION
-# ============================================================
+# ==========================================================
 
 st.set_page_config(
-    page_title="Loan Approval Prediction System",
+    page_title="Loan Approval Prediction",
     page_icon="🏦",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# ============================================================
+# ==========================================================
 # LOAD TRAINED PIPELINE
-# ============================================================
+# ==========================================================
 
 @st.cache_resource
 def load_model():
@@ -24,33 +24,60 @@ def load_model():
 
 model = load_model()
 
-# ============================================================
+# ==========================================================
 # CUSTOM CSS
-# ============================================================
+# ==========================================================
 
 st.markdown("""
 <style>
 
+/* ===============================
+Main Background
+=============================== */
+
 .main{
-    background-color:#f8fafc;
+    background-color:#F8FAFC;
 }
 
-.block-container{
-    padding-top:2rem;
-    padding-bottom:2rem;
-}
+/* ===============================
+Page Title
+=============================== */
 
 h1{
     color:#0F172A;
     text-align:center;
-    font-weight:800;
+    font-weight:700;
 }
 
 h3{
     color:#1E3A8A;
 }
 
-.stButton>button{
+/* ===============================
+Information Cards
+=============================== */
+
+.metric-card{
+    background:linear-gradient(135deg,#2563EB,#1D4ED8);
+    color:white;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0px 5px 12px rgba(0,0,0,0.18);
+    margin-bottom:15px;
+}
+
+.metric-card h2,
+.metric-card h3{
+    color:white;
+    margin:0;
+}
+
+/* ===============================
+Predict Button
+=============================== */
+
+.stButton > button{
     width:100%;
     height:55px;
     border-radius:12px;
@@ -59,75 +86,86 @@ h3{
     color:white;
     font-size:18px;
     font-weight:bold;
-    transition:0.3s;
 }
 
-.stButton>button:hover{
-    background:#1D4ED8;
+.stButton > button:hover{
+    background:#1E40AF;
     color:white;
 }
 
-div[data-testid="stMetric"]{
-    background-color:white;
-    border-radius:12px;
-    padding:15px;
-    box-shadow:0px 3px 8px rgba(0,0,0,0.08);
+/* ===============================
+Sidebar
+=============================== */
+
+[data-testid="stSidebar"]{
+    background:#F1F5F9;
 }
 
-div.stAlert{
+/* ===============================
+Containers
+=============================== */
+
+.block-container{
+    padding-top:2rem;
+    padding-bottom:2rem;
+}
+
+/* ===============================
+Success / Error
+=============================== */
+
+.stSuccess{
     border-radius:12px;
 }
 
-hr{
-    margin-top:10px;
-    margin-bottom:10px;
+.stError{
+    border-radius:12px;
 }
+
+.stWarning{
+    border-radius:12px;
+}
+
+/* ===============================
+Footer
+=============================== */
 
 .footer{
     text-align:center;
-    color:gray;
+    color:#6B7280;
     font-size:14px;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# ============================================================
-# APPLICATION HEADER
-# ============================================================
+# ==========================================================
+# TITLE
+# ==========================================================
 
 st.title("🏦 Loan Approval Prediction System")
 
-st.markdown("""
-Welcome to the **Loan Approval Prediction System**.
-
-This application uses a trained **Machine Learning Pipeline**
-to estimate whether a loan application is likely to be **Approved**
-or **Rejected** based on an applicant's demographic, financial,
-and loan-related information.
-
-Fill in the required details from the sidebar and click
-**Predict Loan Status** to receive an instant prediction.
-""")
+st.markdown(
+"""
+Determine whether a loan application is likely to be **Approved**
+or **Rejected** based on applicant information using a trained
+Machine Learning model.
+"""
+)
 
 st.divider()
 
-# ============================================================
+# ==========================================================
 # SIDEBAR
-# ============================================================
+# ==========================================================
 
-st.sidebar.title("📋 Loan Application Form")
+st.sidebar.header("📝 Loan Application Form")
 
-st.sidebar.markdown("""
-Provide the applicant's information below.
-Ensure the details are accurate for the best prediction.
-""")
+# ==========================================================
+# PERSONAL INFORMATION
+# ==========================================================
 
-# ============================================================
-# APPLICANT INFORMATION
-# ============================================================
-
-with st.sidebar.expander("👤 Applicant Information", expanded=True):
+with st.sidebar.expander("👤 Personal Information", expanded=True):
 
     gender = st.selectbox(
         "Gender",
@@ -135,12 +173,12 @@ with st.sidebar.expander("👤 Applicant Information", expanded=True):
     )
 
     married = st.selectbox(
-        "Married",
+        "Marital Status",
         ["Yes", "No"]
     )
 
     dependents = st.selectbox(
-        "Number of Dependents",
+        "Dependents",
         ["0", "1", "2", "3+"]
     )
 
@@ -153,530 +191,237 @@ with st.sidebar.expander("👤 Applicant Information", expanded=True):
         "Self Employed",
         ["No", "Yes"]
     )
-    
-# ============================================================
+
+# ==========================================================
 # FINANCIAL INFORMATION
-# ============================================================
+# ==========================================================
 
 with st.sidebar.expander("💰 Financial Information", expanded=True):
 
     applicant_income = st.number_input(
-        "Applicant Monthly Income (₦)",
+        "Applicant Income",
         min_value=0.0,
         value=5000.0,
-        step=500.0,
-        format="%.2f"
+        step=100.0
     )
 
     coapplicant_income = st.number_input(
-        "Co-applicant Monthly Income (₦)",
+        "Co-applicant Income",
         min_value=0.0,
-        value=1500.0,
-        step=500.0,
-        format="%.2f"
+        value=0.0,
+        step=100.0
     )
-
-    credit_history = st.selectbox(
-        "Credit History",
-        [1.0, 0.0],
-        format_func=lambda x: "Good (1)" if x == 1.0 else "Poor (0)"
-    )
-
-# ============================================================
-# LOAN INFORMATION
-# ============================================================
-
-with st.sidebar.expander("🏠 Loan Information", expanded=True):
 
     loan_amount = st.number_input(
-        "Loan Amount (in Thousands)",
-        min_value=1.0,
-        value=128.0,
-        step=1.0,
-        format="%.2f"
+        "Loan Amount (in thousands)",
+        min_value=0.0,
+        value=120.0,
+        step=1.0
     )
 
     loan_term = st.selectbox(
         "Loan Amount Term (Days)",
-        [360.0, 180.0, 120.0, 84.0, 60.0, 36.0, 12.0]
+        [12, 36, 60, 84, 120, 180, 240, 300, 360, 480]
     )
+
+    credit_history = st.selectbox(
+        "Credit History",
+        [1, 0],
+        format_func=lambda x: "Good" if x == 1 else "Poor"
+    )
+
+# ==========================================================
+# PROPERTY INFORMATION
+# ==========================================================
+
+with st.sidebar.expander("🏠 Property Information", expanded=True):
 
     property_area = st.selectbox(
         "Property Area",
         ["Urban", "Semiurban", "Rural"]
     )
 
-st.sidebar.divider()
+# ==========================================================
+# PREDICT BUTTON
+# ==========================================================
 
-st.sidebar.info(
-    """
-    💡 Tips for Better Approval Chances
-
-    • Maintain a good credit history.
-    • Higher income generally improves approval chances.
-    • Lower loan amounts are usually easier to approve.
-    • Stable employment and education may positively influence approval.
-    """
+predict = st.sidebar.button(
+    "🔍 Predict Loan Approval",
+    use_container_width=True
 )
 
-# ============================================================
+# ==========================================================
 # CREATE INPUT DATAFRAME
-# ============================================================
+# ==========================================================
 
 sample_data = pd.DataFrame({
 
-    "Gender": [gender],
-    "Married": [married],
-    "Dependents": [dependents],
-    "Education": [education],
-    "Self_Employed": [self_employed],
-    "ApplicantIncome": [applicant_income],
-    "CoapplicantIncome": [coapplicant_income],
-    "LoanAmount": [loan_amount],
-    "Loan_Amount_Term": [loan_term],
-    "Credit_History": [credit_history],
-    "Property_Area": [property_area]
+    "Gender":[gender],
+    "Married":[married],
+    "Dependents":[dependents],
+    "Education":[education],
+    "Self_Employed":[self_employed],
+    "ApplicantIncome":[applicant_income],
+    "CoapplicantIncome":[coapplicant_income],
+    "LoanAmount":[loan_amount],
+    "Loan_Amount_Term":[loan_term],
+    "Credit_History":[credit_history],
+    "Property_Area":[property_area]
 
 })
 
-# ============================================================
-# MAIN PAGE PREVIEW
-# ============================================================
+# ==========================================================
+# MAKE PREDICTION
+# ==========================================================
 
-st.subheader("📋 Loan Application Summary")
-
-left, right = st.columns([2, 1])
-
-with left:
-
-    st.dataframe(
-        sample_data.T.rename(columns={0: "Applicant Details"}),
-        use_container_width=True
-    )
-
-with right:
-
-    total_income = applicant_income + coapplicant_income
-
-    st.metric(
-        "Total Monthly Income",
-        f"₦{total_income:,.2f}"
-    )
-
-    st.metric(
-        "Requested Loan",
-        f"{loan_amount:.0f}K"
-    )
-
-    st.metric(
-        "Loan Term",
-        f"{int(loan_term)} Days"
-    )
-
-st.divider()
-
-# ============================================================
-# PREDICT BUTTON
-# ============================================================
-
-if st.button("🚀 Predict Loan Status"):
+if predict:
 
     prediction = model.predict(sample_data)[0]
 
-    confidence = None
-    approval_probability = None
-    rejection_probability = None
-
     try:
 
-        probabilities = model.predict_proba(sample_data)[0]
+        probability = model.predict_proba(sample_data)[0]
 
-        rejection_probability = probabilities[0] * 100
-        approval_probability = probabilities[1] * 100
+        confidence = np.max(probability) * 100
 
-        confidence = np.max(probabilities) * 100
+        approval_probability = probability[1] * 100
 
-    except Exception:
-        pass
+        rejection_probability = probability[0] * 100
+
+    except:
+
+        confidence = None
+        approval_probability = None
+        rejection_probability = None
+
+    total_income = applicant_income + coapplicant_income
+    
+# ==========================================================
+# DISPLAY PREDICTION
+# ==========================================================
 
     st.divider()
 
-    # ========================================================
-    # DISPLAY RESULT
-    # ========================================================
+    col1, col2 = st.columns(2)
 
-    if prediction == 1:
-
-        st.success("### ✅ Loan Approved")
-
-        st.write(
-            """
-            Congratulations!
-
-            Based on the information provided, the applicant
-            has a **high likelihood of receiving loan approval**
-            according to the trained Machine Learning model.
-            """
-        )
-
-        risk_level = "🟢 Low Risk"
-
-    else:
-
-        st.error("### ❌ Loan Rejected")
-
-        st.write(
-            """
-            Based on the supplied information,
-            the applicant is **less likely to receive loan approval**.
-
-            Improving factors such as income,
-            credit history and requested loan amount
-            may increase future approval chances.
-            """
-        )
-
-        risk_level = "🔴 High Risk"
-
-    # ========================================================
-    # METRICS
-    # ========================================================
-
-    col1, col2, col3 = st.columns(3)
+    # ======================================================
+    # PREDICTION RESULT
+    # ======================================================
 
     with col1:
 
-        st.metric(
-            "Prediction",
-            "Approved" if prediction == 1 else "Rejected"
-        )
+        if prediction == 1:
 
-    with col2:
+            st.success("## ✅ Loan Approved")
 
-        if confidence is not None:
-
-            st.metric(
-                "Confidence",
-                f"{confidence:.2f}%"
+            st.write(
+                """
+                Congratulations! Based on the information provided,
+                the applicant is likely to qualify for the requested loan.
+                """
             )
 
         else:
 
-            st.metric(
-                "Confidence",
-                "Unavailable"
+            st.error("## ❌ Loan Rejected")
+
+            st.write(
+                """
+                Based on the information provided,
+                the applicant is unlikely to qualify for the requested loan.
+                """
             )
 
-    with col3:
+    # ======================================================
+    # LOAN APPLICATION SUMMARY
+    # ======================================================
 
-        st.metric(
-            "Risk Level",
-            risk_level
-        )
+    with col2:
 
-    # ========================================================
-    # PROBABILITY SECTION
-    # ========================================================
+        st.markdown(f"""
+        <div class="metric-card">
+            <h3>📄 Loan Application Summary</h3>
+            <h2>₦ {total_income:,.0f}</h2>
+            <p>Total Monthly Income</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.divider()
+
+    # ======================================================
+    # PREDICTION PROBABILITY
+    # ======================================================
 
     if confidence is not None:
 
-        st.divider()
+        st.markdown(f"""
+        <div class="metric-card">
+            <h3>📊 Prediction Probability</h3>
+            <h2>{confidence:.2f}%</h2>
+        </div>
+        """, unsafe_allow_html=True)
 
-        st.subheader("📈 Prediction Probability")
-
-        left, right = st.columns(2)
-
-        with left:
-
-            st.write("### ✅ Approval Probability")
-
-            st.progress(float(approval_probability) / 100)
-
-            st.success(
-                f"{approval_probability:.2f}%"
-            )
-
-        with right:
-
-            st.write("### ❌ Rejection Probability")
-
-            st.progress(float(rejection_probability) / 100)
-
-            st.error(
-                f"{rejection_probability:.2f}%"
-            )
-            
-    # ========================================================
-    # LOAN APPLICATION INSIGHTS
-    # ========================================================
+        st.progress(confidence / 100)
 
     st.divider()
 
-    st.subheader("📊 Loan Application Insights")
+    # ======================================================
+    # RECOMMENDATION
+    # ======================================================
 
-    insight1, insight2 = st.columns(2)
+    st.subheader("💡 Recommendation")
 
-    with insight1:
-
-        st.markdown("### 👤 Applicant Profile")
-
-        st.write(f"**Gender:** {gender}")
-        st.write(f"**Marital Status:** {married}")
-        st.write(f"**Dependents:** {dependents}")
-        st.write(f"**Education:** {education}")
-        st.write(f"**Self Employed:** {self_employed}")
-
-    with insight2:
-
-        st.markdown("### 💰 Financial Summary")
-
-        st.write(f"**Applicant Income:** ₦{applicant_income:,.2f}")
-        st.write(f"**Co-applicant Income:** ₦{coapplicant_income:,.2f}")
-        st.write(f"**Total Income:** ₦{total_income:,.2f}")
-        st.write(f"**Loan Amount:** {loan_amount:.0f}K")
-        st.write(f"**Loan Term:** {int(loan_term)} Days")
-        st.write(f"**Property Area:** {property_area}")
-
-    st.divider()
-
-    # ========================================================
-    # SMART RECOMMENDATIONS
-    # ========================================================
-
-    st.subheader("💡 Smart Recommendations")
-
-    recommendations = []
-
-    if credit_history == 0:
-        recommendations.append(
-            "✔ Improve your credit history. Applicants with a good credit history generally have a much higher chance of loan approval."
-        )
-
-    if loan_amount > 250:
-        recommendations.append(
-            "✔ Consider requesting a smaller loan amount to improve approval chances."
-        )
-
-    if total_income < 5000:
-        recommendations.append(
-            "✔ Increasing your monthly income can positively influence loan approval."
-        )
-
-    if self_employed == "Yes":
-        recommendations.append(
-            "✔ Ensure all proof of business income and supporting financial documents are available."
-        )
-
-    if dependents == "3+":
-        recommendations.append(
-            "✔ A high number of dependents may affect affordability assessments."
-        )
-
-    if married == "No":
-        recommendations.append(
-            "✔ Ensure your financial stability is clearly demonstrated during application."
-        )
-
-    if education == "Not Graduate":
-        recommendations.append(
-            "✔ Additional proof of stable income may strengthen your application."
-        )
-
-    if len(recommendations) == 0:
+    if prediction == 1:
 
         st.success(
             """
-            🎉 Excellent!
-
-            Based on the provided information, your application
-            demonstrates several positive characteristics commonly
-            associated with successful loan approvals.
+            The applicant shows characteristics commonly associated
+            with successful loan approvals. The application appears
+            financially suitable based on the information provided.
             """
         )
 
     else:
 
-        for recommendation in recommendations:
-            st.info(recommendation)
-
-    st.divider()
-
-    # ========================================================
-    # APPLICATION DETAILS
-    # ========================================================
-
-    st.subheader("📝 Submitted Application")
-
-    display_df = sample_data.copy()
-
-    display_df.columns = [
-        "Gender",
-        "Married",
-        "Dependents",
-        "Education",
-        "Self Employed",
-        "Applicant Income",
-        "Co-applicant Income",
-        "Loan Amount",
-        "Loan Term",
-        "Credit History",
-        "Property Area"
-    ]
-
-    st.dataframe(
-        display_df,
-        use_container_width=True,
-        hide_index=True
-    )
-    
-    # ========================================================
-    # DOWNLOAD REPORT
-    # ========================================================
-
-    st.divider()
-
-    st.subheader("📥 Download Prediction Report")
-
-    report = pd.DataFrame({
-
-        "Prediction":[
-            "Approved" if prediction == 1 else "Rejected"
-        ],
-
-        "Confidence (%)":[
-            round(confidence,2) if confidence is not None else "N/A"
-        ],
-
-        "Applicant Income":[applicant_income],
-        "Co-applicant Income":[coapplicant_income],
-        "Total Income":[total_income],
-        "Loan Amount":[loan_amount],
-        "Loan Term":[loan_term],
-        "Credit History":[credit_history],
-        "Property Area":[property_area]
-
-    })
-
-    csv = report.to_csv(index=False).encode("utf-8")
-
-    st.download_button(
-
-        label="📄 Download Prediction Report",
-
-        data=csv,
-
-        file_name="Loan_Approval_Prediction_Report.csv",
-
-        mime="text/csv"
-
-    )
-
-# ============================================================
-# SIDEBAR INFORMATION
-# ============================================================
-
-st.sidebar.divider()
-
-st.sidebar.subheader("🤖 Model Information")
-
-st.sidebar.success("""
-**Algorithm**
-
-• Logistic Regression
-
-**Pipeline**
-
-• Scikit-Learn Pipeline
-
-**Preprocessing**
-
-• OneHotEncoder
-• StandardScaler
-
-**Deployment**
-
-• Streamlit
-""")
-
-st.sidebar.divider()
-
-st.sidebar.subheader("📖 About")
-
-st.sidebar.write("""
-This application predicts whether a loan application is
-likely to be **Approved** or **Rejected** using a trained
-Machine Learning model.
-
-The prediction is based on demographic,
-financial and loan-related information provided
-by the applicant.
-""")
-
-st.sidebar.info("""
-💡 Note
-
-Predictions generated by this application
-are estimates based on historical data and
-should not replace decisions made by financial
-institutions.
-""")
-
-# ============================================================
-# FOOTER
-# ============================================================
+        st.warning(
+            """
+            Consider improving the applicant's credit history,
+            increasing income, reducing the requested loan amount,
+            or applying with a stronger financial profile before
+            submitting another application.
+            """
+        )
+        
+# ==========================================================
+# DISCLAIMER
+# ==========================================================
 
 st.divider()
 
-footer_left, footer_center, footer_right = st.columns(3)
+st.info(
+    """
+    **Disclaimer**
 
-with footer_left:
+    This application is intended for educational and demonstration
+    purposes only. Predictions are generated using a Machine Learning
+    model trained on historical loan application data and should not
+    replace decisions made by financial institutions.
+    """
+)
 
-    st.markdown("""
-### 🏦 Loan Approval Prediction
-Machine Learning Deployment Project
-""")
-
-with footer_center:
-
-    st.markdown("""
-### 🛠 Technologies
-
-- Python
-- Streamlit
-- Scikit-Learn
-- Pandas
-- NumPy
-""")
-
-with footer_right:
-
-    st.markdown("""
-### 👨‍💻 Developer
-
-Makinde Afolabi Oluwanifemi
-
-Federal University of Agriculture Abeokuta
-
-SIWES Project (2026)
-""")
+# ==========================================================
+# FOOTER
+# ==========================================================
 
 st.markdown(
 """
 <div class="footer">
 
-<hr>
-
-<p>
-This application was developed for educational and demonstration purposes.
-Predictions are generated using a Machine Learning model and should not be considered
-as official financial decisions.
-</p>
-
-<p>
-Built with ❤️ using Streamlit, Scikit-Learn and Python.
-</p>
+Developed with ❤️ using <b>Python</b>, <b>Scikit-Learn</b> and <b>Streamlit</b>
 
 </div>
 """,
 unsafe_allow_html=True
-)                    
+)
+
+            
