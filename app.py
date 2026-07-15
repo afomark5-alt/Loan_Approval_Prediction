@@ -101,6 +101,40 @@ Sidebar
     background:#F1F5F9;
 }
 
+/* ==========================================
+SIDEBAR LABELS
+========================================== */
+
+[data-testid="stSidebar"] label{
+    color:#0F172A !important;
+    font-weight:600;
+}
+
+/* Expander titles */
+
+[data-testid="stSidebar"] .streamlit-expanderHeader{
+    color:#0F172A !important;
+    font-weight:700;
+}
+
+/* Selectbox text */
+
+[data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"]{
+    color:#0F172A !important;
+}
+
+/* Number input text */
+
+[data-testid="stSidebar"] input{
+    color:#0F172A !important;
+}
+
+/* Sidebar markdown */
+
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span{
+    color:#0F172A !important;
+}
 /* ===============================
 Containers
 =============================== */
