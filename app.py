@@ -467,6 +467,51 @@ if predict:
             """
         )
         
+# ======================================================
+# APPLICATION DETAILS
+# ======================================================
+
+st.divider()
+
+st.subheader("📋 Submitted Application")
+
+display_data = sample_data.copy()
+
+display_data.columns = [
+    "Gender",
+    "Marital Status",
+    "Dependents",
+    "Education",
+    "Self Employed",
+    "Applicant Income",
+    "Co-applicant Income",
+    "Loan Amount",
+    "Loan Term",
+    "Credit History",
+    "Property Area"
+]
+
+display_data.index = ["Applicant"]
+
+st.dataframe(
+    display_data,
+    use_container_width=True
+)
+
+# ======================================================
+# DOWNLOAD APPLICATION
+# ======================================================
+
+csv = display_data.to_csv(index=False).encode("utf-8")
+
+st.download_button(
+    label="📥 Download Application Details",
+    data=csv,
+    file_name="loan_application_details.csv",
+    mime="text/csv",
+    use_container_width=True
+)
+        
 # ==========================================================
 # DISCLAIMER
 # ==========================================================
